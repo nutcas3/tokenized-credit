@@ -1,46 +1,31 @@
-import { useAccount, useConnect, useDisconnect } from 'wagmi'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
+import { Layout } from './components/Layout';
+import { Dashboard } from './pages/Dashboard';
+import { Loans } from './pages/Loans';
+import { Tranches } from './pages/Tranches';
+import { Underwriter } from './pages/Underwriter';
+import { Admin } from './pages/Admin';
+import { WalletProvider } from './context/WalletContext';
 
 function App() {
-  const account = useAccount()
-  const { connectors, connect, status, error } = useConnect()
-  const { disconnect } = useDisconnect()
+
 
   return (
-    <>
-      <div>
-        <h2>Account</h2>
-
-        <div>
-          status: {account.status}
-          <br />
-          addresses: {JSON.stringify(account.addresses)}
-          <br />
-          chainId: {account.chainId}
-        </div>
-
-        {account.status === 'connected' && (
-          <button type="button" onClick={() => disconnect()}>
-            Disconnect
-          </button>
-        )}
-      </div>
-
-      <div>
-        <h2>Connect</h2>
-        {connectors.map((connector) => (
-          <button
-            key={connector.uid}
-            onClick={() => connect({ connector })}
-            type="button"
-          >
-            {connector.name}
-          </button>
-        ))}
-        <div>{status}</div>
-        <div>{error?.message}</div>
-      </div>
-    </>
-  )
+    <BrowserRouter>
+      <WalletProvider>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/loans" element={<Loans />} />
+            <Route path="/tranches" element={<Tranches />} />
+            <Route path="/underwriter" element={<Underwriter />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Layout>
+      </WalletProvider>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
