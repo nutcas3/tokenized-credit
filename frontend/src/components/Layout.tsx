@@ -1,7 +1,9 @@
 import { ReactNode } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
+import { useConnect, useDisconnect } from 'wagmi';
 import { useWallet } from '../context/WalletContext';
 import { formatAddress } from '../utils/format';
+import { Button } from './Button';
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,6 +11,8 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const { address, isConnected, userRoles, usdcInfo } = useWallet();
+  const { connectors, connect, error: connectError } = useConnect();
+  const { disconnect } = useDisconnect();
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -46,20 +50,28 @@ export function Layout({ children }: LayoutProps) {
                     <span className="block">USDC: {usdcInfo.balance.toFixed(2)}</span>
                     <span className="block text-xs">{formatAddress(address || '')}</span>
                   </div>
-                  <button
-                    type="button"
-                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => disconnect()}
                   >
-                    Connected
-                  </button>
+                    Disconnect
+                  </Button>
                 </div>
               ) : (
-                <button
-                  type="button"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Connect Wallet
-                </button>
+                <div>
+                  {connectors.map((connector) => (
+                    <Button
+                      key={connector.uid}
+                      variant="primary"
+                      onClick={() => connect({ connector })}
+                      className="mr-2"
+                    >
+                      Connect {connector.name}
+                    </Button>
+                  ))}
+                  {connectError && <div className="text-sm text-red-500 mt-1">{connectError.message}</div>}
+                </div>
               )}
             </div>
           </div>
