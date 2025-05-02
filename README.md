@@ -106,8 +106,7 @@ forge test
 cd backend
 npm run dev
 ```
-## Addresses
-  - wallet address: 0x7937FddC64A43A05EBb8FBF3E4979b78866b3ae2
+##  Contract Addresses
   - AccessController: 0xd07b408bDc32Bef596f19ca9FFFC226004d37135
   - Senior LP Token: 0x67Eeb169990aAB1d9B8e37FEBBcb94BF3bD8CCB4
   - Junior LP Token: 0x4D8976Be55a8325578D9278405924ca623f09d03
